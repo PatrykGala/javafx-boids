@@ -1,12 +1,11 @@
 package com.tofti;
 
 import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Objects;
 
-public class Vector2D {
-    private double x;
-    private double y;
+public final class Vector2D {
+    private final double x;
+    private final double y;
 
     public Vector2D(double x, double y) {
         this.x = x;
@@ -33,8 +32,8 @@ public class Vector2D {
         double wx = x > xLimit ? x - xLimit : x;
         wx = wx < 0 ? xLimit - wx : wx;
 
-        double wy  = y > yLimit ? y - yLimit : y;
-        wy = wy < 0 ? yLimit - wy  : wy;
+        double wy = y > yLimit ? y - yLimit : y;
+        wy = wy < 0 ? yLimit - wy : wy;
 
         return new Vector2D(wx, wy);
     }
@@ -42,11 +41,12 @@ public class Vector2D {
     public static Vector2D getArithmeticMean(Collection<? extends Vector2D> input) {
         double sumX = 0d;
         double sumY = 0d;
-        for(Vector2D i : input) {
+        for (Vector2D i : input) {
             sumX += i.getX();
             sumY += i.getY();
         }
-        return new Vector2D(sumX / (double)input.size(), sumY / (double)input.size());
+        int size = input.size();
+        return new Vector2D(sumX / (double) size, sumY / (double) size);
     }
 
     public double getDistanceFrom(Vector2D other) {
@@ -59,13 +59,12 @@ public class Vector2D {
 
     public Vector2D normalizeTo(double to) {
         double magnitude = getMagnitude();
-        if(0d == magnitude) {
+        if (0d == magnitude) {
             return new Vector2D(0d, 0d);
         }
         double xi = x / magnitude * to;
         double yi = y / magnitude * to;
-        Vector2D n = new Vector2D(xi, yi);
-        return n;
+        return new Vector2D(xi, yi);
     }
 
     public double getMagnitude() {
@@ -77,8 +76,23 @@ public class Vector2D {
         return Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
     }
 
+
     @Override
     public String toString() {
-        return "Vector2D{" + "x=" + x +", y=" + y +'}';
+        return "Vector2D{" + "x=" + x + ", y=" + y + '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Vector2D vector2D = (Vector2D) o;
+        return Double.compare(vector2D.x, x) == 0 &&
+                Double.compare(vector2D.y, y) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y);
     }
 }
